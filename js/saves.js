@@ -1,4 +1,4 @@
-thisVersion = 1.039;
+thisVersion = 1.040;
 // handles saving and loading
 
 function save(Game) {

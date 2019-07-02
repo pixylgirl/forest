@@ -11,6 +11,17 @@ function getContent() {
                     else if (SaveContent.Data.ForestContent.state == 1) {
                         createText("You stand in a supposedly abandoned forest. There is nothing around but trees and yourself.");
                         createText("A thick fog makes it hard to see well enough to go exploring.");
+                        createText("Perhaps this would be a good place to get some wood.");
+                        createText("Wood: " + SaveContent.Data.BagContent.wood);
+                        if (SaveContent.Data.BagContent.axe) {
+                            createButton("Cut down a tree", "SaveContent.Content.ForestContent.ChopTree();");
+                        }
+                        else {
+                            createButtonInvalid("Cut down a tree (need a axe)");
+                            if (!SaveContent.Tabs.hasTab("Crafting")) {
+                                SaveContent.Tabs.insert("Crafting");
+                            }
+                        }
                         if (SaveContent.Data.ForestContent.treesCut < 10) {
                             createText("There is very little clear space to put things.");
                         }
@@ -35,17 +46,6 @@ function getContent() {
                         }
                         else {
                             createText("Missing progression: Tree clearing");
-                        }
-                        createText("Perhaps this would be a good place to get some wood.");
-                        createText("Wood: " + SaveContent.Data.BagContent.wood);
-                        if (SaveContent.Data.BagContent.axe) {
-                            createButton("Cut down a tree", "SaveContent.Content.ForestContent.ChopTree();");
-                        }
-                        else {
-                            createButtonInvalid("Cut down a tree (need a axe)");
-                            if (!SaveContent.Tabs.hasTab("Crafting")) {
-                                SaveContent.Tabs.insert("Crafting");
-                            }
                         }
                     }
                     else if (SaveContent.Data.ForestContent.state == 2) {
