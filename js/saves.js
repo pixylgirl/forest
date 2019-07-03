@@ -94,7 +94,6 @@ function load() {
     }
     Game = fixMissing(Game);
     if (Game.version != thisVersion) {
-        Game = requestUpdate(Game);
         console.log("An update is avalable, wiping save.");
         Game = makeNewSave();
     }
