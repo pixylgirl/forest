@@ -90,6 +90,7 @@ function tabContentManager(name) {
         case "new game":
             console.log("Loading game via main tab...");
             setupSaveData();
+            addTickContent();
             Tabs.loadTab(Tabs.selected);
             return;
         default:
@@ -101,4 +102,8 @@ function tabContentManager(name) {
 function setupSaveData() {
     SaveContent = load();
     save(SaveContent);
+}
+
+function addTickContent() {
+    setInterval(getTickContent().onTick, 500);
 }

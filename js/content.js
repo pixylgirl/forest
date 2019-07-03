@@ -1,7 +1,8 @@
+/// Provides the object containing the main content manager
 function getContent() {
     return {
         initTabContent: function(name) {
-            console.log("Checking against other content");
+            console.log("Checking against ct: main");
             switch (name) {
                 case "The Forest":
                     if (SaveContent.Data.ForestContent.state == 0) {
@@ -31,8 +32,8 @@ function getContent() {
                             createText("There is very little clear space to put things.");
                         }
                         else if (SaveContent.Data.ForestContent.treesCut < 50 || !SaveContent.Data.ForestContent.hasFire) {
-                            createText("There is a bit of a clearing where a campfire could be set up.");
                             if (!SaveContent.Data.ForestContent.hasFire) {
+                                createText("There is a bit of a clearing where a campfire could be set up.");
                                 if (SaveContent.Data.BagContent.wood < 15) {
                                     createButtonInvalid("Make campfire (15 wood)");
                                 }
@@ -41,7 +42,7 @@ function getContent() {
                                 }
                             }
                             else {
-                                createText("There is a campfire here that makes it easier to see a bit further into the fog.");
+                                createText("There is a campfire here that makes it easier to see a bit further into the fog. There are some rocks are on the ground that you could pick up you couldn't see before.");
                             }
                         }
                         else if (SaveContent.Data.ForestContent.treesCut < 150 || !SaveContent.Data.ForestContent.hasCamp) {
@@ -57,6 +58,7 @@ function getContent() {
                         createText("A fog filled forest surrounds you. There is a camp set up here in a clearing.");
                         createButton("Enter camp", "SaveContent.Content.ForestContent.EnterCamp();");
                         createBreak();
+                        createText("There are trees here you could chop down with an axe.");
                         if (SaveContent.Data.BagContent.axe) {
                             var woodtext = SaveContent.Data.BagContent.wood + " wood, ";
                             var leavestext = SaveContent.Data.BagContent.leaves + " leaves)";
@@ -66,13 +68,17 @@ function getContent() {
                             createButtonInvalid("Chop trees (need a axe)");
                         }
                         createBreak();
+                        createText("There are rocks you could pick up off the ground.");
                         createButton("Pick up rocks (" + SaveContent.Data.BagContent.rocks + " rocks)", "SaveContent.Content.ForestContent.PickRocks();");
                         createBreak();
-                        if (SaveContent.Data.BagContent.shovel && SaveContent.Data.ForestContent.clayPit) {
-                            createButton("Dig Clay", "SaveContent.Content.ForestContent.DigClay();");
-                        }
-                        else if (SaveContent.Data.ForestContent.clayPit) {
-                            createButtonInvalid("Dig Clay (need a shovel)");
+                        if (SaveContent.Data.ForestContent.clayPit) {
+                            createText("There is an area of clay which could be obtained with a shovel.");
+                            if (SaveContent.Data.BagContent.shovel) {
+                                createButton("Dig Clay", "SaveContent.Content.ForestContent.DigClay();");
+                            }
+                            else {
+                                createButtonInvalid("Dig Clay (need a shovel)");
+                            }
                         }
                     }
                     return;
@@ -122,6 +128,9 @@ function getContent() {
                 case "Population":
                     createText("Population/Housing: " + SaveContent.Data.CampContent.Population.total + "/" + SaveContent.Data.CampContent.housing);
                     createBreak();
+                    createText("Progress to next citizen: ");
+                    createMeter((SaveContent.Data.CampContent.Population.popcurrent / (SaveContent.Data.CampContent.Population.popnext / 100)));
+                    createText("(" + SaveContent.Data.CampContent.Population.popcurrent + "/" + SaveContent.Data.CampContent.Population.popnext + " ticks)");
                     createText("Demographics");
                     createText("--------------------");
                     createText("Young: " + SaveContent.Data.CampContent.Population.young);
@@ -143,10 +152,15 @@ function getContent() {
                     createBreak();
                     createBreak();
                     createButton("Reset Game", "SaveContent.Content.InfoContent.Reset();");
+                    createBreak();
+                    createBreak();
+                    createBreak();
+                    createText("The game autosaves every 50 seconds. Progress to next autosave: ");
+                    createMeter(SaveContent.autosave_ticks);
                     return;
                 default:
                     createText("ERROR: This content manager does not handle this tab! (ct: main)");
-                    console.log("This content manager does not handle this tab! (ct: main)");
+                    console.log("Unable to find content, no alternative implimented. (ct: main)");
                     return;
             }
         },
@@ -173,11 +187,9 @@ function getContent() {
                     }
                     SaveContent.Data.BagContent.axe = 0;
                 }
-                SaveContent.Tabs.loadTab(0);
             },
             PickRocks: function() {
                 SaveContent.Data.BagContent.rocks += 1;
-                SaveContent.Tabs.loadTab(0);
             },
             MakeFire: function() {
                 SaveContent.Data.BagContent.wood -= 15;
@@ -232,4 +244,45 @@ function getContent() {
             }
         }
     };
+}
+
+/// Provides the function to be run every tick
+function getTickContent() {
+    return {
+        onTick: function() {
+            // Autosave if this is 100, otherwise ++
+            SaveContent.autosave_ticks += 1;
+            if (SaveContent.autosave_ticks >= 100) {
+                SaveContent.autosave_ticks = 0;
+                save(SaveContent);
+            }
+            // If the population can increase, tick the population meter
+            if (SaveContent.Data.CampContent.Population.total < SaveContent.Data.CampContent.housing) {
+                SaveContent.Data.CampContent.Population.popcurrent += 1;
+                // If the population meter is full, increase population and reset meter
+                if (SaveContent.Data.CampContent.Population.popcurrent >= SaveContent.Data.CampContent.Population.popnext) {
+                    SaveContent.Data.CampContent.Population.young += 1;
+                    SaveContent.Data.CampContent.Population.total += 1;
+                    SaveContent.Data.CampContent.Population.popcurrent = 0;
+                    SaveContent.Data.CampContent.Population.popnext = (100 + 50 * (SaveContent.Data.CampContent.Population.total - 2));
+                }
+            }
+            // Tick the citizen aging counter
+            SaveContent.Data.CampContent.Population.poptoage -= 1;
+            // If it is zero, update population ages
+            if (SaveContent.Data.CampContent.Population.poptoage <= 0) {
+                SaveContent.Data.CampContent.Population.poptoage = 1000;
+                var childup = Math.floor(SaveContent.Data.CampContent.Population.young / 2);
+                var normalup = Math.floor(SaveContent.Data.CampContent.Population.normal / 3);
+                var oldup = Math.floor(SaveContent.Data.CampContent.Population.old / 2);
+                SaveContent.Data.CampContent.Population.young -= childup;
+                SaveContent.Data.CampContent.Population.normal += childup;
+                SaveContent.Data.CampContent.Population.normal -= normalup;
+                SaveContent.Data.CampContent.Population.old += normalup;
+                SaveContent.Data.CampContent.Population.old -= oldup;
+                SaveContent.Data.CampContent.Population.total -= oldup;
+            }
+            Tabs.loadTab(Tabs.selected);
+        }
+    }
 }

@@ -1,4 +1,4 @@
-thisVersion = 1.043;
+thisVersion = 1.044;
 // handles saving and loading
 
 function save(Game) {
@@ -22,6 +22,7 @@ function makeNewSave() {
     newTabs.addNew("The Forest");
     var Game = {
         version: thisVersion,
+        autosave_ticks: 0,
         Tabs: newTabs,
         Content: getContent(),
         Data: {
@@ -43,7 +44,10 @@ function makeNewSave() {
                     total: 0,
                     young: 0,
                     normal: 0,
-                    old: 0
+                    old: 0,
+                    popnext: 100,
+                    popcurrent: 0,
+                    poptoage: 1000
                 },
                 housing: 0
             },
