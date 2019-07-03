@@ -24,6 +24,7 @@ function getContent() {
                             }
                         }
                         if (SaveContent.Data.ForestContent.hasFire) {
+                            createBreak();
                             createButton("Pick up rocks (" + SaveContent.Data.BagContent.rocks + " rocks)", "SaveContent.Content.ForestContent.PickRocks();");
                         }
                         if (SaveContent.Data.ForestContent.treesCut < 10) {
