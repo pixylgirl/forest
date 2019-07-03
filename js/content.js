@@ -12,7 +12,6 @@ function getContent() {
                         createText("You stand in a supposedly abandoned forest. There is nothing around but trees and yourself.");
                         createText("A thick fog makes it hard to see well enough to go exploring.");
                         createText("Perhaps this would be a good place to get some wood.");
-                        createText("Wood: " + SaveContent.Data.BagContent.wood);
                         if (SaveContent.Data.BagContent.axe) {
                             var woodtext = SaveContent.Data.BagContent.wood + " wood, ";
                             var leavestext = SaveContent.Data.BagContent.leaves + " leaves)";
@@ -142,7 +141,7 @@ function getContent() {
                     createBreak();
                     createBreak();
                     createBreak();
-                    createButton("Reset Game (slightly broken)", "SaveContent.Content.InfoContent.Reset();");
+                    createButton("Reset Game", "SaveContent.Content.InfoContent.Reset();");
                     return;
                 default:
                     createText("ERROR: This content manager does not handle this tab! (ct: main)");
@@ -225,8 +224,10 @@ function getContent() {
                 save(SaveContent);
             },
             Reset: function() {
-                save(makeNewSave());
-                load();
+                SaveContent.version -= 1;
+                save(SaveContent);
+                setupSaveData();
+                Tabs.loadTab(Tabs.selected);
             }
         }
     };

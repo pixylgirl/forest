@@ -1,4 +1,4 @@
-thisVersion = 1.041;
+thisVersion = 1.042;
 // handles saving and loading
 
 function save(Game) {
@@ -87,34 +87,19 @@ function load() {
     // grab data from cookie
     var Game = Cookies.getJSON('gamesave');
     console.log("here is Game: " + Game);
-    if (Game === undefined) {
-        console.log("Game came out as undefined, initalise new game!");
-        var Game = makeNewSave();
-        return Game;
-    }
-    if (Game.version === null) {
-        console.log("Game.version came out as null, initalise new game!");
-        var Game = makeNewSave();
-        return Game;
-    }
-    if (Game.version === undefined) {
-        console.log("Game.version was undefined, initalise new game!");
+    if (Game == undefined || Game == null || Game == undefined) {
+        console.log("Game was not aquired, initalizing a new game!");
         var Game = makeNewSave();
         return Game;
     }
     Game = fixMissing(Game);
     if (Game.version != thisVersion) {
         Game = requestUpdate(Game);
-        console.log("An update is avalable.");
+        console.log("An update is avalable, wiping save.");
+        Game = makeNewSave();
     }
     // game was loaded
     console.log("Game.version is " + Game.version + ", loading save!");
     Game.Tabs.display();
     return Game;
-}
-
-function requestUpdate(save) {
-    console.log("Incompatible save, updating.");
-    save = makeNewSave();
-    return save;
 }
