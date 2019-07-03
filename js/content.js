@@ -74,7 +74,7 @@ function getContent() {
                         if (SaveContent.Data.ForestContent.clayPit) {
                             createText("There is an area of clay which could be obtained with a shovel.");
                             if (SaveContent.Data.BagContent.shovel) {
-                                createButton("Dig Clay", "SaveContent.Content.ForestContent.DigClay();");
+                                createButton("Dig Clay (" + SaveContent.Data.BagContent.clay + " clay)", "SaveContent.Content.ForestContent.DigClay();");
                             }
                             else {
                                 createButtonInvalid("Dig Clay (need a shovel)");
@@ -84,19 +84,23 @@ function getContent() {
                     return;
                 case "Crafting":
                     createText("Things you know how to make:");
-                    if (SaveContent.Data.BagContent.wood >= 5 && SaveContent.Data.BagContent.rustedAxeHead >= 1) {
-                        createButton("Axe (5 Wood, 1 Rusted axe head)", "SaveContent.Content.CraftingContent.CraftAxe();");
+                    if (SaveContent.Data.BagContent.wood >= 5 && SaveContent.Data.BagContent.rocks >= 15) {
+                        createButton("Makeshift Axe (5 Wood, 15 Rocks)", "SaveContent.Content.CraftingContent.CraftAxe();");
                     }
                     else {
-                        createButtonInvalid("Axe (5 Wood, 1 Rusted axe head)");
+                        createButtonInvalid("Makeshift Axe (5 Wood, 15 Rocks)");
+                    }
+                    createBreak();
+                    if (SaveContent.Data.BagContent.wood >= 5 && SaveContent.Data.BagContent.rocks >= 15) {
+                        createButton("Makeshift Shovel (5 Wood, 15 Rocks)", "SaveContent.Content.CraftingContent.CraftShovel();");
+                    }
+                    else {
+                        createButtonInvalid("Makeshift Shovel (5 Wood, 15 Rocks)");
                     }
                     return;
                 case "Bag":
                 case "Storage":
                     createText("This is all the stuff you have:");
-                    if (SaveContent.Data.BagContent.rustedAxeHead > 0) {
-                        createText("Rusted axe head (" + SaveContent.Data.BagContent.rustedAxeHead + ")");
-                    }
                     if (SaveContent.Data.BagContent.wood > 0) {
                         createText("Wood (" + SaveContent.Data.BagContent.wood + ")");
                     }
@@ -110,10 +114,13 @@ function getContent() {
                         createText("Clay (" + SaveContent.Data.BagContent.clay + ")");
                     }
                     if (SaveContent.Data.BagContent.axe == 1) {
-                        createText("Rotting axe (" + SaveContent.Data.BagContent.axeDurability + "/35)");
+                        createText("Rotting Axe (" + SaveContent.Data.BagContent.axeDurability + "/35)");
                     }
                     if (SaveContent.Data.BagContent.axe == 2) {
-                        createText("Average axe (" + SaveContent.Data.BagContent.axeDurability + "/125)");
+                        createText("Makeshift Axe (" + SaveContent.Data.BagContent.axeDurability + "/125)");
+                    }
+                    if (SaveContent.Data.BagContent.shovel == 1) {
+                        createText("Makeshift Shovel (" + SaveContent.Data.BagContent.shovelDurability + "/75)");
                     }
                     return;
                 case "Camp":
@@ -127,22 +134,41 @@ function getContent() {
                     return;
                 case "Population":
                     createText("Population/Housing: " + SaveContent.Data.CampContent.Population.total + "/" + SaveContent.Data.CampContent.housing);
+                    if (SaveContent.Data.BagContent.wood >= 35 && SaveContent.Data.BagContent.leaves >= 80 && SaveContent.Data.BagContent.rocks >= 15) {
+                        createButton("Make housing (35 Wood, 80 Leaves, 25 Rocks)", "SaveContent.Content.CampContent.MakeHousing();");
+                    }
+                    else {
+                        createButtonInvalid("Make housing (35 Wood, 80 Leaves, 25 Rocks)");
+                    }
                     createBreak();
                     createText("Progress to next citizen: ");
                     createMeter((SaveContent.Data.CampContent.Population.popcurrent / (SaveContent.Data.CampContent.Population.popnext / 100)));
                     createText("(" + SaveContent.Data.CampContent.Population.popcurrent + "/" + SaveContent.Data.CampContent.Population.popnext + " ticks)");
-                    createText("Demographics");
-                    createText("--------------------");
+                    createBreak();
+                    createText("Demographics:");
                     createText("Young: " + SaveContent.Data.CampContent.Population.young);
                     createText("Working: " + SaveContent.Data.CampContent.Population.normal);
                     createText("Old: " + SaveContent.Data.CampContent.Population.old);
                     createBreak();
-                    if (SaveContent.Data.BagContent.wood >= 35 && SaveContent.Data.BagContent.leaves >= 80 && SaveContent.Data.BagContent.rocks >= 15) {
-                        createButton("Make housing (35 wood, 80 leaves, 15 rocks)", "SaveContent.Content.CampContent.MakeHousing();");
+                    createText("avalable workers/productive citizens: (" + SaveContent.Data.CampContent.Jobs.avalable + "/" + SaveContent.Data.CampContent.Population.normal + ")");
+                    createText("Jobs:");
+                    createText("Inventors produce Research Points (RP) for use in the Research tab.");
+                    createButtonInvalid("Inventor (" + SaveContent.Data.CampContent.Jobs.inventor + ")");
+                    if (SaveContent.Data.CampContent.Jobs.inventor) {
+                        createButton("-1", "SaveContent.Data.CampContent.Jobs.inventor -= 1; SaveContent.Data.CampContent.Jobs.avalable += 1; SaveContent.Tabs.loadTab(Tabs.selected);")
                     }
                     else {
-                        createButtonInvalid("Make housing (35 wood, 80 leaves, 15 rocks)");
+                        createButtonInvalid("-1");
                     }
+                    if (SaveContent.Data.CampContent.Jobs.avalable) {
+                        createButton("+1", "SaveContent.Data.CampContent.Jobs.inventor += 1; SaveContent.Data.CampContent.Jobs.avalable -= 1; SaveContent.Tabs.loadTab(Tabs.selected);");
+                    }
+                    else {
+                        createButtonInvalid("+1");
+                    }
+                    createText("Treecutters cut trees. They produce wood.");
+                    createButtonInvalid("Treecutter (" + SaveContent.Data.CampContent.Jobs.treecutter + ")");
+                    createText("jobs incomplete");
                     return;
                 case "Info":
                     createText("Forest v" + thisVersion);
@@ -179,12 +205,6 @@ function getContent() {
                 SaveContent.Data.ForestContent.treesCut += 1;
                 SaveContent.Data.BagContent.axeDurability -= 1;
                 if (SaveContent.Data.BagContent.axeDurability < 1) {
-                    if (SaveContent.Data.BagContent.axe == 1) {
-                        SaveContent.Data.BagContent.rustedAxeHead += 1;
-                    }
-                    if (SaveContent.Data.BagContent.axe == 2) {
-                        SaveContent.Data.BagContent.rustedAxeHead += 1;
-                    }
                     SaveContent.Data.BagContent.axe = 0;
                 }
             },
@@ -214,7 +234,7 @@ function getContent() {
             MakeHousing: function() {
                 SaveContent.Data.BagContent.wood -= 35;
                 SaveContent.Data.BagContent.leaves -= 80;
-                SaveContent.Data.BagContent.rocks -= 15;
+                SaveContent.Data.BagContent.rocks -= 25;
                 SaveContent.Data.CampContent.housing += 1;
                 if (SaveContent.Data.CampContent.Population.total < 2) {
                     SaveContent.Data.CampContent.Population.total = SaveContent.Data.CampContent.housing;
@@ -226,10 +246,17 @@ function getContent() {
         CraftingContent: {
             CraftAxe: function() {
                 SaveContent.Data.BagContent.wood -= 5;
-                SaveContent.Data.BagContent.rustedAxeHead -= 1;
+                SaveContent.Data.BagContent.rocks -= 15;
                 SaveContent.Data.BagContent.axe = 2;
                 SaveContent.Data.BagContent.axeDurability = 125;
-                SaveContent.Tabs.loadTab(2);
+                SaveContent.Tabs.loadTab(Tabs.selected);
+            },
+            CraftShovel: function() {
+                SaveContent.Data.BagContent.wood -= 5;
+                SaveContent.Data.BagContent.rocks -= 15;
+                SaveContent.Data.BagContent.shovel = 1;
+                SaveContent.Data.BagContent.shovelDurability = 75;
+                SaveContent.Tabs.loadTab(Tabs.selected);
             }
         },
         InfoContent: {
@@ -282,6 +309,35 @@ function getTickContent() {
                 SaveContent.Data.CampContent.Population.old -= oldup;
                 SaveContent.Data.CampContent.Population.total -= oldup;
             }
+
+            // Calculate avalable workers
+            SaveContent.Data.CampContent.Jobs.avalable = (
+                SaveContent.Data.CampContent.Population.normal -
+                SaveContent.Data.CampContent.Jobs.inventor -
+                SaveContent.Data.CampContent.Jobs.treecutter -
+                SaveContent.Data.CampContent.Jobs.rockpicker -
+                SaveContent.Data.CampContent.Jobs.claydigger
+            );
+
+            // Remove any extra workers we can't have
+            while (SaveContent.Data.CampContent.Jobs.avalable < 0) {
+                if (SaveContent.Data.CampContent.Jobs.inventor) {
+                    SaveContent.Data.CampContent.Jobs.inventor -= 1;
+                }
+                else if (SaveContent.Data.CampContent.Jobs.treecutter) {
+                    SaveContent.Data.CampContent.Jobs.treecutter -= 1;
+                }
+                else if (SaveContent.Data.CampContent.Jobs.rockpicker) {
+                    SaveContent.Data.CampContent.Jobs.rockpicker -= 1;
+                }
+                else if (SaveContent.Data.CampContent.Jobs.claydigger) {
+                    SaveContent.Data.CampContent.Jobs.claydigger -= 1;
+                }
+            }
+            // Worker production
+            SaveContent.Data.CampContent.Research.rp += SaveContent.Data.CampContent.Jobs.inventor;
+
+            // Update any changes to the current tab
             Tabs.loadTab(Tabs.selected);
         }
     }

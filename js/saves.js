@@ -1,4 +1,4 @@
-thisVersion = 1.044;
+thisVersion = 1.045;
 // handles saving and loading
 
 function save(Game) {
@@ -49,10 +49,19 @@ function makeNewSave() {
                     popcurrent: 0,
                     poptoage: 1000
                 },
+                Jobs: {
+                    avalable: 0,
+                    inventor: 0,
+                    treecutter: 0,
+                    rockpicker: 0,
+                    claydigger: 0
+                },
+                Research: {
+                    rp: 0
+                },
                 housing: 0
             },
             BagContent: {
-                rustedAxeHead: 0,
                 wood: 0,
                 leaves: 0,
                 rocks: 0,
