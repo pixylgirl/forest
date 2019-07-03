@@ -14,13 +14,18 @@ function getContent() {
                         createText("Perhaps this would be a good place to get some wood.");
                         createText("Wood: " + SaveContent.Data.BagContent.wood);
                         if (SaveContent.Data.BagContent.axe) {
-                            createButton("Cut down a tree", "SaveContent.Content.ForestContent.ChopTree();");
+                            var woodtext = SaveContent.Data.BagContent.wood + " wood, ";
+                            var leavestext = SaveContent.Data.BagContent.leaves + " leaves)";
+                            createButton("Chop trees (" + woodtext + leavestext, "SaveContent.Content.ForestContent.ChopTree();");
                         }
                         else {
                             createButtonInvalid("Cut down a tree (need a axe)");
                             if (!SaveContent.Tabs.hasTab("Crafting")) {
                                 SaveContent.Tabs.insert("Crafting");
                             }
+                        }
+                        if (SaveContent.Data.ForestContent.hasFire) {
+                            createButton("Pick up rocks (" + SaveContent.Data.BagContent.rocks + " rocks)", "SaveContent.Content.ForestContent.PickRocks();");
                         }
                         if (SaveContent.Data.ForestContent.treesCut < 10) {
                             createText("There is very little clear space to put things.");
