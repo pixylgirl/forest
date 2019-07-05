@@ -180,7 +180,36 @@ function getContent() {
                     else {
                         createButtonInvalid("+1");
                     }
-                    createText("jobs incomplete");
+                    createText("Stone Grabbers get stones. The produce rocks.");
+                    createButtonInvalid("Stone Grabbers (" + SaveContent.Data.CampContent.Jobs.rockpicker + ")");
+                    if (SaveContent.Data.CampContent.Jobs.rockpicker) {
+                        createButton("-1", "SaveContent.Data.CampContent.Jobs.rockpicker -= 1; SaveContent.Data.CampContent.Jobs.avalable += 1; SaveContent.Tabs.loadTab(Tabs.selected);")
+                    }
+                    else {
+                        createButtonInvalid("-1");
+                    }
+                    if (SaveContent.Data.CampContent.Jobs.avalable) {
+                        createButton("+1", "SaveContent.Data.CampContent.Jobs.rockpicker += 1; SaveContent.Data.CampContent.Jobs.avalable -= 1; SaveContent.Tabs.loadTab(Tabs.selected);");
+                    }
+                    else {
+                        createButtonInvalid("+1");
+                    }
+                    if (SaveContent.Data.ForestContent.clayPit) {
+                        createText("Clay Diggers dig clay. They produce clay.");
+                        createButtonInvalid("Clay Diggers (" + SaveContent.Data.CampContent.Jobs.claydigger + ")");
+                        if (SaveContent.Data.CampContent.Jobs.claydigger) {
+                            createButton("-1", "SaveContent.Data.CampContent.Jobs.claydigger -= 1; SaveContent.Data.CampContent.Jobs.avalable += 1; SaveContent.Tabs.loadTab(Tabs.selected);")
+                        }
+                        else {
+                            createButtonInvalid("-1");
+                        }
+                        if (SaveContent.Data.CampContent.Jobs.avalable) {
+                            createButton("+1", "SaveContent.Data.CampContent.Jobs.claydigger += 1; SaveContent.Data.CampContent.Jobs.avalable -= 1; SaveContent.Tabs.loadTab(Tabs.selected);");
+                        }
+                        else {
+                            createButtonInvalid("+1");
+                        }
+                    }
                     return;
                 case "Info":
                     createText("Forest v" + thisVersion);
@@ -346,8 +375,12 @@ function getTickContent() {
                     SaveContent.Data.CampContent.Jobs.claydigger -= 1;
                 }
             }
+            
             // Worker production
             SaveContent.Data.CampContent.Research.rp += SaveContent.Data.CampContent.Jobs.inventor;
+            SaveContent.Data.BagContent.wood += SaveContent.Data.CampContent.Jobs.treecutter;
+            SaveContent.Data.BagContent.rocks += SaveContent.Data.CampContent.Jobs.rockpicker;
+            SaveContent.Data.BagContent.clay += SaveContent.Data.CampContent.Jobs.claydigger;
 
             // Update any changes to the current tab
             Tabs.loadTab(Tabs.selected);
