@@ -168,6 +168,18 @@ function getContent() {
                     }
                     createText("Treecutters cut trees. They produce wood.");
                     createButtonInvalid("Treecutter (" + SaveContent.Data.CampContent.Jobs.treecutter + ")");
+                    if (SaveContent.Data.CampContent.Jobs.treecutter) {
+                        createButton("-1", "SaveContent.Data.CampContent.Jobs.treecutter -= 1; SaveContent.Data.CampContent.Jobs.avalable += 1; SaveContent.Tabs.loadTab(Tabs.selected);")
+                    }
+                    else {
+                        createButtonInvalid("-1");
+                    }
+                    if (SaveContent.Data.CampContent.Jobs.avalable) {
+                        createButton("+1", "SaveContent.Data.CampContent.Jobs.treecutter += 1; SaveContent.Data.CampContent.Jobs.avalable -= 1; SaveContent.Tabs.loadTab(Tabs.selected);");
+                    }
+                    else {
+                        createButtonInvalid("+1");
+                    }
                     createText("jobs incomplete");
                     return;
                 case "Info":
