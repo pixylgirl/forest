@@ -211,6 +211,22 @@ function getContent() {
                         }
                     }
                     return;
+                case "Research":
+                    createText("RP: " + SaveContent.Data.CampContent.Research.rp);
+                    createText("Avalable technologies:");
+                    var left = SaveContent.Data.CampContent.Research.Tech.amnt;
+                    while (left >= 0) {
+                        if (SaveContent.Data.CampContent.Research.Tech.cost[left] <= SaveContent.Data.CampContent.Research.rp) {
+                            createButton(SaveContent.Data.CampContent.Research.Tech.name[left] + " (" + SaveContent.Data.CampContent.Research.Tech.cost[left] + ")", "SaveContent.Content.CampContent.Research." + SaveContent.Data.CampContent.Research.Tech.name[left] + "();");
+                        }
+                        else {
+                            createButtonInvalid(SaveContent.Data.CampContent.Research.Tech.name[left] + " (" + SaveContent.Data.CampContent.Research.Tech.cost[left] + ")");
+                        }
+                        createText(SaveContent.Data.CampContent.Research.Tech.desc);
+                        createBreak();
+                        left -= 1;
+                    }
+                    return;
                 case "Info":
                     createText("Forest v" + thisVersion);
                     createText("produced by pixylgirl");
@@ -252,6 +268,13 @@ function getContent() {
             PickRocks: function() {
                 SaveContent.Data.BagContent.rocks += 1;
             },
+            DigClay: function() {
+                SaveContent.Data.BagContent.clay += 1;
+                SaveContent.Data.BagContent.shovelDurability -= 1;
+                if (SaveContent.Data.BagContent.shovelDurability < 1) {
+                    SaveContent.Data.BagContent.shovel = 0;
+                }
+            },
             MakeFire: function() {
                 SaveContent.Data.BagContent.wood -= 15;
                 SaveContent.Data.ForestContent.hasFire = true;
@@ -282,6 +305,37 @@ function getContent() {
                     SaveContent.Data.CampContent.Population.normal = SaveContent.Data.CampContent.housing;
                 }
                 SaveContent.Tabs.loadTab(SaveContent.Tabs.find("Population"));
+            },
+            Research: {
+                fn: {
+                    remove: function(index) {
+                        SaveContent.Data.CampContent.Research.Tech.amnt -= 1;
+                        SaveContent.Data.CampContent.Research.Tech.name.splice(index);
+                        SaveContent.Data.CampContent.Research.Tech.cost.splice(index);
+                        SaveContent.Data.CampContent.Research.Tech.desc.splice(index);
+                    },
+                    add: function(name, cost, desc) {
+                        SaveContent.Data.CampContent.Research.Tech.amnt += 1;
+                        SaveContent.Data.CampContent.Research.Tech.name.push(name);
+                        SaveContent.Data.CampContent.Research.Tech.cost.push(cost);
+                        SaveContent.Data.CampContent.Research.Tech.desc.push(desc);
+                    },
+                    find: function(name) {
+                        for (i = SaveContent.Data.CampContent.Research.Tech.amnt; i >= 0; i--) {
+                            if (SaveContent.Data.CampContent.Research.Tech.name[i] == name) {
+                                return i;
+                            }
+                        }
+                        console.log("the specified research (" + name + ") was not found!");
+                        return -1;
+                    }
+                },
+                Torches: function() {
+                    SaveContent.Data.CampContent.Research.rp -= 120;
+                    SaveContent.Content.CampContent.Research.fn.remove(SaveContent.Content.CampContent.Research.fn.find("Torches"));
+                    SaveContent.Data.ForestContent.clayPit = true;
+                    // add more research here
+                }
             }
         },
         CraftingContent: {
@@ -375,7 +429,7 @@ function getTickContent() {
                     SaveContent.Data.CampContent.Jobs.claydigger -= 1;
                 }
             }
-            
+
             // Worker production
             SaveContent.Data.CampContent.Research.rp += SaveContent.Data.CampContent.Jobs.inventor;
             SaveContent.Data.BagContent.wood += SaveContent.Data.CampContent.Jobs.treecutter;

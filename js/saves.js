@@ -1,4 +1,4 @@
-thisVersion = 1.047;
+thisVersion = 1.048;
 // handles saving and loading
 
 function save(Game) {
@@ -57,7 +57,13 @@ function makeNewSave() {
                     claydigger: 0
                 },
                 Research: {
-                    rp: 0
+                    rp: 0,
+                    Tech: {
+                        name: ["Torches"],
+                        desc: ["It's like a fire, but portable. Maybe this way we can see further into the forest!"],
+                        cost: [120],
+                        amnt: 0 // maximum index, not total amounts
+                    }
                 },
                 housing: 0
             },
