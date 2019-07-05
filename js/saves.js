@@ -1,6 +1,14 @@
-thisVersion = 1.048;
-// handles saving and loading
+// saves.js is just what it sounds like: tools
+// for loading and saving the game as well as
+// version management.
 
+// Current game version
+thisVersion = 1.048;
+
+/**
+ * Saves a passed game object.
+ * @param {*} Game - A game object (SaveContent)
+ */
 function save(Game) {
     // remove old cookie
     Cookies.remove('gamesave');
@@ -15,6 +23,10 @@ function save(Game) {
     );
 }
 
+/**
+ * Generates a new save file.
+ * @return {*} Your new save file
+ */
 function makeNewSave() {
     var newTabs = Tabs;
     Tabs.amount = 1;
@@ -85,6 +97,11 @@ function makeNewSave() {
     return Game;
 }
 
+/**
+ * Replaces functions that are not saved between loads into a save file.
+ * @param {*} Tame - A game object (SaveContent)
+ * @returns {*} Your new save file
+ */
 function fixMissing(Tame) {
     console.log("fixing data!");
     Tame.Tabs.addNew = Tabs.addNew;
@@ -102,6 +119,11 @@ function fixMissing(Tame) {
     return Tame;
 }
 
+/**
+ * Loads a save file completely.
+ * Completes all required checks including fixMissing and version control
+ * @returns {*} Your new save file
+ */
 function load() {
     // grab data from cookie
     var Game = Cookies.getJSON('gamesave');

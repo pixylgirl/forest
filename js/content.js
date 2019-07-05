@@ -1,4 +1,11 @@
-/// Provides the object containing the main content manager
+// content.js is where all the stuff is: this file
+// supplies all the text and code for the game to
+// engine and saves to run it.
+
+/**
+ * Provides all of the main game content to be used with your save.
+ * @returns {*} Content for a save file (SaveContent.Content)
+ */
 function getContent() {
     return {
         initTabContent: function(name) {
@@ -361,7 +368,8 @@ function getContent() {
             Reset: function() {
                 SaveContent.version -= 1;
                 save(SaveContent);
-                setupSaveData();
+                SaveContent = load();
+                save(SaveContent);
                 Tabs.loadTab(Tabs.selected);
             }
         }

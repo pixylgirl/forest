@@ -1,3 +1,6 @@
+// engine.js declares some of the core groundwork
+// surrounding how data is passed around and used.
+
 Tabs = {
     amount: 1,
     names: ["new game"],
@@ -77,33 +80,23 @@ Tabs = {
     }
 };
 
+/**
+ * Will find and draw page content for a given a tab name.
+ * @param {String} name Name of the content to find
+ */
 function tabContentManager(name) {
     // remove page content
-    var page = document.getElementsByTagName("botpart")[0];
-    var child = page.lastElementChild;
-    while (child) {
-        page.removeChild(child);
-        child = page.lastElementChild;
+    clearPage();
+    
+    // Find the appropiate content handler for this tab
+    if (name == "new game") {
+        console.log("Loading game from reload");
+        SaveContent = load();
+        save(SaveContent);
+        setInterval(getTickContent().onTick, 500);
+        Tabs.loadTab(Tabs.selected);
     }
-    // find appropiate handler/renderer
-    switch (name) {
-        case "new game":
-            console.log("Loading game via main tab...");
-            setupSaveData();
-            addTickContent();
-            Tabs.loadTab(Tabs.selected);
-            return;
-        default:
-            SaveContent.Content.initTabContent(name);
-            return;
+    else {
+        SaveContent.Content.initTabContent(name);
     }
-}
-
-function setupSaveData() {
-    SaveContent = load();
-    save(SaveContent);
-}
-
-function addTickContent() {
-    setInterval(getTickContent().onTick, 500);
 }
