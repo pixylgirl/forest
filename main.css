@@ -11,14 +11,14 @@ html, body {
 button {
     font-size: 125%;
     font-family: Arial, Helvetica;
-    color: rgb(73, 0, 141);
-    background-color: rgb(54, 145, 161);
+    color: rgb(0, 0, 0);
+    background-color: rgb(27, 87, 110));
     touch-action: manipulation;
 }
 
 .invalid-btn {
-    color: black;
-    background-color: white;
+    color: rgb(0, 0, 0);
+    background-color: rgb(139, 139, 139);
 }
 
 p {
