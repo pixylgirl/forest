@@ -6,13 +6,10 @@ Tabs = {
     names: ["new game"],
     selected: 0,
     getContent: function() {
-        var bamount = this.amount;
-        var bnames = this.names;
-        var bselected = this.selected;
         return {
-            amount: bamount,
-            names: bnames,
-            selected: bselected
+            amount: this.amount,
+            names: this.names,
+            selected: this.selected
         };
     },
     setContent: function(content) {
