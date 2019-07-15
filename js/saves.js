@@ -103,7 +103,7 @@ function makeNewSave() {
  * @returns {*} Your new save file
  */
 function fixMissing(Tame) {
-    console.log("fixing data!");
+    console.log("Fixing data!");
     Tame.Tabs.addNew = Tabs.addNew;
     Tame.Tabs.remove = Tabs.remove;
     Tame.Tabs.display = Tabs.display;
@@ -127,7 +127,7 @@ function fixMissing(Tame) {
 function load() {
     // grab data from cookie
     var Game = Cookies.getJSON('gamesave');
-    console.log("here is Game: " + Game);
+    console.log("Here is Game: " + Game);
     if (Game == undefined || Game == null || Game == undefined) {
         console.log("Game was not aquired, initalizing a new game!");
         var Game = makeNewSave();

@@ -333,7 +333,7 @@ function getContent() {
                                 return i;
                             }
                         }
-                        console.log("the specified research (" + name + ") was not found!");
+                        console.log("The specified research (" + name + ") was not found!");
                         return -1;
                     }
                 },
