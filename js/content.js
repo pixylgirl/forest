@@ -342,6 +342,7 @@ function getContent() {
                     SaveContent.Content.CampContent.Research.fn.remove(SaveContent.Content.CampContent.Research.fn.find("Torches"));
                     SaveContent.Data.ForestContent.clayPit = true;
                     // add more research here
+                    SaveContent.Content.CampContent.Research.fn.add("Clay-Bricks", 250, "Allows the creation of bricks out of clay.");
                     SaveContent.Content.CampContent.Research.fn.add("Clay-Molds", 350, "Allows the crafting of clay molds for use in basic metallurgy.");
                     SaveContent.Content.CampContent.Research.fn.add("Rock-Seperation", 750, "Allows the identification and seperation of diffrent rock types.");
                 }
